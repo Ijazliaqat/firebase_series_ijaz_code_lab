@@ -1,33 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../services/config';
 
 function Dashboard() {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUserData({
-          email: user.email,
-          name: user.displayName || 'User',
-          role: 'Job Seeker'
-        });
-        setLoading(false);
-      } else {
-        navigate('/login');
-      }
-    });
 
-    return () => unsubscribe();
-  }, [navigate]);
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
       navigate('/login');
     } catch (err) {
       console.error('Error signing out:', err);
