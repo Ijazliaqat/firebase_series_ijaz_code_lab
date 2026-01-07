@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useState } from 'react';
 import { Link, useNavigate, } from 'react-router-dom';
 import { auth } from '../services/config';
@@ -10,6 +10,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate()
+  const provider = new GoogleAuthProvider()
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,6 +32,17 @@ function Login() {
     }
 
   };
+
+
+  const loginWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider)
+      navigate("/dashboard")
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
@@ -111,6 +123,14 @@ function Login() {
               </Link>
             </p>
           </div>
+
+          {/* Google Login Button */}
+          <div className="mt-4">
+            <button onClick={loginWithGoogle} className="w-full google-login-button py-3 rounded-lg font-semibold border border-gray-300 flex items-center justify-center gap-2 transition-all hover:bg-gray-100 focus:outline-none">
+              Login with Google
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
