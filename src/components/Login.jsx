@@ -1,4 +1,4 @@
-import { FacebookAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { FacebookAuthProvider, GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { useState } from 'react';
 import { Link, useNavigate, } from 'react-router-dom';
 import { auth } from '../services/config';
@@ -12,6 +12,7 @@ function Login() {
   const navigate = useNavigate()
   const provider = new GoogleAuthProvider()
   const facebookProvider = new FacebookAuthProvider()
+  const githubProvider = new GithubAuthProvider()
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -19,11 +20,9 @@ function Login() {
     setLoading(true);
 
     try {
-
       await signInWithEmailAndPassword(auth, email, password)
       setEmail("")
       setPassword("")
-
       navigate("/dashboard")
 
     } catch (err) {
@@ -37,7 +36,7 @@ function Login() {
 
   const loginWithGoogle = async () => {
     try {
-      const result = await signInWithPopup(auth, provider)
+      await signInWithPopup(auth, provider)
       navigate("/dashboard")
     } catch (error) {
       console.log(error)
@@ -47,7 +46,17 @@ function Login() {
 
   const loginWithFacebook = async () => {
     try {
-      const result = await signInWithPopup(auth, facebookProvider)
+      await signInWithPopup(auth, facebookProvider)
+      navigate("/dashboard")
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const loginWithGithub = async () => {
+    try {
+      await signInWithPopup(auth, githubProvider)
       navigate("/dashboard")
     } catch (error) {
       console.log(error)
@@ -94,9 +103,11 @@ function Login() {
             </div>
 
             <div>
-              <label className="block text-gray-800 text-sm font-medium mb-2">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-gray-800 text-sm font-medium">
+                  Password
+                </label>
+              </div>
               <input
                 type="password"
                 value={password}
@@ -126,6 +137,10 @@ function Login() {
             </button>
           </form>
 
+          <Link to="/forgot-password" className="text-sm mt-4 text-blue-600 hover:text-blue-700 transition-colors">
+            Forgot Password?
+          </Link>
+
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
               Don't have an account?{' '}
@@ -145,6 +160,12 @@ function Login() {
           <div className="mt-4">
             <button onClick={loginWithFacebook} className="w-full google-login-button py-3 rounded-lg font-semibold border border-gray-300 flex items-center justify-center gap-2 transition-all hover:bg-gray-100 focus:outline-none">
               Login with Facebook
+            </button>
+          </div>
+
+          <div className="mt-4">
+            <button onClick={loginWithGithub} className="w-full google-login-button py-3 rounded-lg font-semibold border border-gray-300 flex items-center justify-center gap-2 transition-all hover:bg-gray-100 focus:outline-none">
+              Login with Github
             </button>
           </div>
 

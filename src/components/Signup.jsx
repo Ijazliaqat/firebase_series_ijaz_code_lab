@@ -1,4 +1,4 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../services/config';
@@ -25,7 +25,9 @@ function Signup() {
 
     try {
 
-      await createUserWithEmailAndPassword(auth, email, password)
+      const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+
+      await sendEmailVerification(userCredentials.user);
 
       setName("")
       setEmail("")
